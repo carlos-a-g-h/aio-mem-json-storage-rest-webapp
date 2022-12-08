@@ -150,7 +150,7 @@ async def handler_get(request):
 	status_code=200
 
 	if _ev_private:
-		# This could screw up some health checks
+		# This could screw up some health checks and cron jobs
 		# status_code=403
 		print("GET / 1",status_code)
 
@@ -241,7 +241,7 @@ async def handler_post(request):
 			for key in the_list:
 				if key in _the_storage:
 					processed=processed+1
-					response.update({key:_the_storage.get("key")})
+					response.update({key:_the_storage.get(key)})
 
 			if processed==0:
 				wutt=True
