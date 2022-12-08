@@ -150,7 +150,8 @@ async def handler_get(request):
 	status_code=200
 
 	if _ev_private:
-		status_code=403
+		# This could screw up some health checks
+		# status_code=403
 		print("GET / 1",status_code)
 
 	if not _ev_private:
