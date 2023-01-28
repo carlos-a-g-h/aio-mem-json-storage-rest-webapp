@@ -243,7 +243,6 @@ async def handler_post(request):
 		if not wutt:
 			for pair in the_list:
 				_the_storage.update(pair)
-				response.update(pair)
 
 	if operation=="r":
 		# read only

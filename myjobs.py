@@ -3,9 +3,10 @@
 # Regular imports
 import asyncio
 
-# Grab the data
+# Grabs the data
 from thedata import _the_storage
 
+# Sample function for your jobs
 async def job():
 	print("Job Example:\nPrint current data each 10 sec.")
 	while True:
