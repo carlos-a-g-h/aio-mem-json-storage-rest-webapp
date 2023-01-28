@@ -1,7 +1,7 @@
 # AIO mem-cached JSON storage REST-like webserver
 
 ## What is this?
-It's a Web server for storing data in key+value pairs
+It's a Web server for storing data in key+value pairs in memory
 
 NOTE: This is not a database, it is not intended to be used as such, If you're looking for a database for key+value paired data, checkout Redis or MongoDB
 
