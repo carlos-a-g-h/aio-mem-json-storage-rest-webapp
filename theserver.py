@@ -120,18 +120,18 @@ def filter_keys_and_op(req_data):
 	con_r_multi=False
 
 	if con_w_one:
-		operation="W"
+		operation="w"
 
 	if con_w_multi:
-		operation="W"
+		operation="w"
 
 	if (not key_value_pair) and (not key_value_pair_list):
 		if key_one and (not key_list):
-			operation="R"
+			operation="r"
 			con_r_one=True
 
 		if (not key_one) and key_list:
-			operation="R"
+			operation="r"
 			con_r_multi=True
 
 	return (con_w_one,con_w_multi,con_r_one,con_r_multi,operation)
@@ -220,7 +220,7 @@ async def handler_post(request):
 			status_code=406
 			print("POST / 1:",status_code)
 
-	if operation=="W":
+	if operation=="w":
 		# create or update
 
 		the_list=[]
@@ -243,8 +243,9 @@ async def handler_post(request):
 		if not wutt:
 			for pair in the_list:
 				_the_storage.update(pair)
+				response.update(pair)
 
-	if operation=="R":
+	if operation=="r":
 		# read only
 
 		the_list=read_from_store(req_data,con_r_one,con_r_multi)

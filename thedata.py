@@ -23,16 +23,16 @@ JSONStore UI
 		value=value.trim();
 
 		json_text="{";
-		json_text=json_text+"\\"password\\":\\""+thepassword+"\\",";
+		json_text=json_text+"'password':'"+thepassword+"'";
 
 		if (keyname.length>0)
 		{
-			json_text=json_text+"\\"keyname\\":\\""+keyname+"\\",";
+			json_text=json_text+",'key':'"+keyname+"'";
 		};
 
 		if (del===false && (keyname.length>0) && (value.length>0))
 		{
-			json_text=json_text+"\\"value\\":\\""+value+"\\",";
+			json_text=json_text+",'value':"+value;
 		};
 
 		json_text=json_text+"}";
