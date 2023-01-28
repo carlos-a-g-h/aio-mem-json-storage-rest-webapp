@@ -9,13 +9,25 @@ It's a Web server for storing JSON data such as tokens, and other stuff
 - Minimal web interface to interact with the API
 - Manipulate the data using jobs inside the webserver
 
-## ENV Vars
+## Web interface
+
+- Provides a minimal access to the API
+- The web interface is only available when the privacy mode is active
+
+## Jobs
+
+- By using jobs, you can customize the behaviour of the data stored as time passes
+- You can see an example of a job [here](myjobs.py) that runs as an asyncio task. Use that file as a template to make custom jobs
+
+NOTICE: By extending the functionality with your own jobs, you will have to modify the requirements.txt file
+
+## Environment Variables
 
 - PASSWORD (text) Password for modifying data. Default is "12345678"
 - PRIVATE (bool) Private mode. Default is "True"
 - PORT (number) Port number for the web server. Default is 80
 
-## API usage
+## API reference
 
 ### Read data (Private mode enabled)
 Read a single key
