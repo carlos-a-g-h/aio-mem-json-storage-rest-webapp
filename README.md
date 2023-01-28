@@ -62,6 +62,7 @@ Sample Response {"some_key":"value"}
 
 ### Write data
 All responses are an empty JSON {}
+
 Values can be strings, ints, etc... nested JSONs, arrays, arrays with JSONs...
 
 🤔 Create or update a key+value pair
