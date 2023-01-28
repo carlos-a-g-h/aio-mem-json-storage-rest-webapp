@@ -290,7 +290,7 @@ async def handler_delete(request):
 	if not wutt:
 		con_w_one,con_w_multi,con_r_one,con_r_multi,operation=filter_keys_and_op(req_data)
 
-		if not operation=="R":
+		if not operation=="r":
 			wutt=True
 			status_code=406
 			print("DELETE / 1:",status_code)
@@ -310,7 +310,7 @@ async def handler_delete(request):
 			for key in the_list:
 				if key in _the_storage:
 					processed=processed+1
-					del _the_storage[key]
+					_the_storage.pop(key)
 
 			if processed==0:
 				wutt=True
