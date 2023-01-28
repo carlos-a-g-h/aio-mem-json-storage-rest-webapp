@@ -11,15 +11,11 @@ from aiohttp import web
 
 from thedata import _the_storage
 from thedata import _html_homepage
-from myjobs import job
 
-#do_jobs=False
-#try:
-#	from myjobs import job
-#except:
-#	logging.error("No jobs found")
-#else:
-#	do_jobs=True
+try:
+	from myjobs import job
+except:
+	pass
 
 ################################################################################
 
@@ -29,13 +25,6 @@ logging.basicConfig(filename=_logfile,format='[%(levelname) 5s/%(asctime)s] %(na
 logging.error("Initializing JSONStore...")
 
 ################################################################################
-
-# ENV VARS
-
-# PASSWORD: (Text) Password for creating, updating or deleting data
-# PRIVATE: (Bool) Wether a password is needed or not to retrieve data from the storage with a GET request
-# PORT: (Number) Port used by the webserver
-# SEQUENTIAL: (Bool)
 
 _ev_password=os.getenv("PASSWORD","12345678")
 _ev_port=os.getenv("PORT","80")
@@ -158,13 +147,9 @@ def read_from_store(req_data,con_r_one,con_r_multi):
 
 ################################################################################
 
+# Web server handlers
+
 async def handler_get(request):
-
-	# GET /
-
-	# Get value from existing keys (only if not private)
-	# → Get a value from a specific key: "/?key=keyname"
-	# → Get the whole storage (a bit dangerous and unnecessary): "/"
 
 	response={}
 	status_code=200
@@ -190,22 +175,6 @@ async def handler_get(request):
 	return web.Response(body=json.dumps(response),content_type="application/json",charset="utf-8",status=status_code)
 
 async def handler_post(request):
-
-	# POST /
-
-	# Create or update a key+value pair:
-	#{"password":"password","key":"keyname","value":{"any":"thing","you":[want],"in":[4,"json"]}}
-
-	# Create or update multiple key+value pairs:
-	# {"password":"password","kvpairs":{"key1":"val1","key2":"val2","key3":"val3","keyN":"valN"}}
-
-	# Get a value from an existing key (only if private):
-	# {"password":"password","key":"keyname"}
-	# Returns key+value like this {"keyname":"value"} if found, otherwise, it returns nothing
-
-	# Get multiple values from multiple keys (only if private):
-	# {"password":"password":"keys":["key1","key2","keyN"]}
-	# Returns all keys and values found like this {"key1":"value1","key2":"value2","keyN":"valueN"}
 
 	response={}
 	operation=None
@@ -271,16 +240,6 @@ async def handler_post(request):
 
 async def handler_delete(request):
 
-	# DELETE /
-
-	# It always returns an empty JSON, so keep an eye for the status code
-
-	# Delete a key and it's value:
-	# {"password":"password","key":"keyname"}
-
-	# Delete multiple keys along with their corresponding values:
-	# {"password":"password","keys":["key1","key2","key3","keyN"]}
-
 	response={}
 	operation=None
 
@@ -334,26 +293,6 @@ async def build_app():
 
 if "job" in dir():
 	this_loop=asyncio.get_event_loop()
-
-	print("current loop status:")
-
-	print(this_loop)
-
-	#if do_jobs:
-	#	print("running task...")
-	#	this_loop.create_task(job())
-
-	print("running task...")
-
 	this_loop.create_task(job())
 
-print("current loop status:")
-
-print(this_loop)
-
-print("running webserver...")
 web.run_app(build_app(),port=_ev_port)
-
-################################################################################
-
-# Any resemblace to Redis or any other key-value-pair-non-SQL DB is purely coincidential because this project is obviously not a DB...
