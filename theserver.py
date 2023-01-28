@@ -5,8 +5,28 @@
 import asyncio
 import json
 import os
+import logging
 
 from aiohttp import web
+
+from thedata import _the_storage
+from thedata import _html_homepage
+from myjobs import job
+
+#do_jobs=False
+#try:
+#	from myjobs import job
+#except:
+#	logging.error("No jobs found")
+#else:
+#	do_jobs=True
+
+################################################################################
+
+_logfile="log.txt"
+open(_logfile,"wt")
+logging.basicConfig(filename=_logfile,format='[%(levelname) 5s/%(asctime)s] %(name)s: %(msg)s',level=logging.ERROR)
+logging.error("Initializing JSONStore...")
 
 ################################################################################
 
@@ -17,24 +37,25 @@ from aiohttp import web
 # PORT: (Number) Port used by the webserver
 # SEQUENTIAL: (Bool)
 
-def config_privacy():
-	value_raw=os.getenv("PRIVATE","False")
-	value_raw=value_raw.strip()
-	if value_raw in ["False","True"]:
-		value=eval(value_raw)
+_ev_password=os.getenv("PASSWORD","12345678")
+_ev_port=os.getenv("PORT","80")
+
+def eval_bool(invalue):
+	if not invalue==None:
+		invalue=invalue.strip()
+		invalue=invalue.lower()
+
+	if invalue in ["false","true"]:
+		vd={"false":False,"true":True}
+		value=vd[invalue]
 	else:
 		value=False
 
 	return value
 
-_ev_private=config_privacy()
+_ev_private=eval_bool(os.getenv("PRIVATE","True"))
 
-del config_privacy
-
-_ev_password=os.getenv("PASSWORD","12345678")
-_ev_port=os.getenv("PORT","80")
-
-_the_storage={}
+del eval_bool
 
 ################################################################################
 
@@ -50,6 +71,7 @@ async def filter_main(request):
 	try:
 		req_data_raw=await request.text()
 		req_data_raw=req_data_raw.strip()
+		print(req_data_raw)
 	except Exception as e:
 		wutt=True
 		status_code=400
@@ -148,9 +170,7 @@ async def handler_get(request):
 	status_code=200
 
 	if _ev_private:
-		# This could screw up some health checks and cron jobs
-		# status_code=403
-		print("GET / 1",status_code)
+		return web.Response(body=_html_homepage,content_type="text/html",charset="utf-8",status=200)
 
 	if not _ev_private:
 		get_key=request.query.get("key")
@@ -174,17 +194,17 @@ async def handler_post(request):
 	# POST /
 
 	# Create or update a key+value pair:
-	#{"password":"thepassword","key":"keyname","value":{"any":"thing","you":[want],"in":[4,"json"]}}
+	#{"password":"password","key":"keyname","value":{"any":"thing","you":[want],"in":[4,"json"]}}
 
 	# Create or update multiple key+value pairs:
-	# {"password":"thepassword","kvpairs":{"key1":"val1","key2":"val2","key3":"val3","keyN":"valN"}}
+	# {"password":"password","kvpairs":{"key1":"val1","key2":"val2","key3":"val3","keyN":"valN"}}
 
 	# Get a value from an existing key (only if private):
-	# {"password":"thepassword","key":"keyname"}
+	# {"password":"password","key":"keyname"}
 	# Returns key+value like this {"keyname":"value"} if found, otherwise, it returns nothing
 
 	# Get multiple values from multiple keys (only if private):
-	# {"password":"thepassword":"keys":["key1","key2","keyN"]}
+	# {"password":"password":"keys":["key1","key2","keyN"]}
 	# Returns all keys and values found like this {"key1":"value1","key2":"value2","keyN":"valueN"}
 
 	response={}
@@ -256,10 +276,10 @@ async def handler_delete(request):
 	# It always returns an empty JSON, so keep an eye for the status code
 
 	# Delete a key and it's value:
-	# {"password":"thepassword","key":"keyname"}
+	# {"password":"password","key":"keyname"}
 
 	# Delete multiple keys along with their corresponding values:
-	# {"password":"thepassword","keys":["key1","key2","key3","keyN"]}
+	# {"password":"password","keys":["key1","key2","key3","keyN"]}
 
 	response={}
 	operation=None
@@ -301,20 +321,6 @@ async def handler_delete(request):
 
 ################################################################################
 
-this_loop=asyncio.get_event_loop()
-
-################################################################################
-
-# Jobs to perform each X seconds (for example: do something with the data)
-
-async def jobs():
-	while True:
-		await asyncio.sleep(10)
-
-this_loop.create_task(jobs())
-
-################################################################################
-
 # Running the server
 
 async def build_app():
@@ -326,6 +332,26 @@ async def build_app():
 	])
 	return app
 
+if "job" in dir():
+	this_loop=asyncio.get_event_loop()
+
+	print("current loop status:")
+
+	print(this_loop)
+
+	#if do_jobs:
+	#	print("running task...")
+	#	this_loop.create_task(job())
+
+	print("running task...")
+
+	this_loop.create_task(job())
+
+print("current loop status:")
+
+print(this_loop)
+
+print("running webserver...")
 web.run_app(build_app(),port=_ev_port)
 
 ################################################################################
