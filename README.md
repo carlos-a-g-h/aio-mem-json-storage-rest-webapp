@@ -1,7 +1,9 @@
 # AIO mem-cached JSON storage REST-like webserver
 
 ## What is this?
-It's a Web server for storing JSON data such as tokens, and other stuff
+It's a Web server for storing data in key+value pairs
+
+This is not a database, if you're looking for a database, look somewhere else, not here
 
 ## Features
 - Create, update, read and/or delete data
