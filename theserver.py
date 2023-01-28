@@ -136,8 +136,6 @@ def read_from_store(req_data,con_r_one,con_r_multi):
 
 ################################################################################
 
-# HTTP Handlers
-
 async def handler_get(request):
 
 	# GET /
@@ -303,6 +301,20 @@ async def handler_delete(request):
 
 ################################################################################
 
+this_loop=asyncio.get_event_loop()
+
+################################################################################
+
+# Jobs to perform each X seconds (for example: do something with the data)
+
+async def jobs():
+	while True:
+		await asyncio.sleep(10)
+
+this_loop.create_task(jobs())
+
+################################################################################
+
 # Running the server
 
 async def build_app():
@@ -314,7 +326,6 @@ async def build_app():
 	])
 	return app
 
-this_loop=asyncio.get_event_loop()
 web.run_app(build_app(),port=_ev_port)
 
 ################################################################################
