@@ -3,7 +3,7 @@
 ## What is this?
 It's a Web server for storing data in key+value pairs
 
-This is not a database, if you're looking for a database, look somewhere else, not here
+NOTE: This is not a database, it is not intended to be used as such, If you're looking for a database for key+value paired data, checkout Redis or MongoDB
 
 ## Features
 - Create, update, read and/or delete data
